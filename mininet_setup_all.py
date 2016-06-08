@@ -16,7 +16,8 @@ USERNAME='admin'
 PASSWORD='admin'
 
 CLASSIFIER1_MGMT_IP=MGMT_IP_PREFIX+'10'
-SFF_MGMT_IP=MGMT_IP_PREFIX+'21'
+SFF1_MGMT_IP=MGMT_IP_PREFIX+'21'
+SFF2_MGMT_IP=MGMT_IP_PREFIX+'22'
 CLASSIFIER2_MGMT_IP=MGMT_IP_PREFIX+'30'
 
 #CLASSIFIER1_DP_IP=DP_IP_PREFIX+'10'
@@ -25,14 +26,12 @@ CLASSIFIER2_MGMT_IP=MGMT_IP_PREFIX+'30'
 #CLASSIFIER2_DP_IP=DP_IP_PREFIX+'30'
 
 CLASSIFIER1_DP_IP='10.0.0.1'
-SFF_DP_IP='10.0.0.3'
-SF1_DP_IP='192.168.56.101'
+SFF1_DP_IP='10.0.0.3'
+SFF2_DP_IP='10.0.0.4'
+SF1_DP_IP='172.10.0.103'
+SF2_DP_IP='172.10.0.104'
 CLASSIFIER2_DP_IP='10.0.0.2'
 
-#CLASSIFIER1_DP_IP=CLASSIFIER1_MGMT_IP
-#SFF_DP_IP=SFF_MGMT_IP
-#SF1_DP_IP=DP_IP_PREFIX+'21'
-#CLASSIFIER2_DP_IP=CLASSIFIER2_MGMT_IP
 
 CLASSIFIER1_DP_IF='br-sfc-eth1'
 CLASSIFIER2_DP_IF='br-sfc-eth1'
@@ -91,10 +90,16 @@ def get_service_nodes_data():
                 "name": "node1",
                 "service-function": [
                 ],
-                "ip-mgmt-address": SFF_MGMT_IP
+                "ip-mgmt-address": SFF1_MGMT_IP
             },
             {
                 "name": "node2",
+                "service-function": [
+                ],
+                "ip-mgmt-address": SFF2_MGMT_IP
+            },
+            {
+                "name": "node3",
                 "service-function": [
                 ],
                 "ip-mgmt-address": CLASSIFIER2_MGMT_IP
@@ -123,6 +128,22 @@ def get_service_functions_data():
                         "ip": SF1_DP_IP,
                         "transport": "service-locator:vxlan-gpe",
                         "service-function-forwarder": "SFF1"
+                    }
+                ]
+            },
+            {
+                "name": "fw-2",
+                #"ip-mgmt-address": SF_VM_IP,
+                #"rest-uri": "http://"+SF_VM_IP+":5000",
+                "type": "firewall",
+                "nsh-aware": "true",
+                "sf-data-plane-locator": [
+                    {
+                        "name": "sf2-dpl",
+                        "port": 6633,
+                        "ip": SF2_DP_IP,
+                        "transport": "service-locator:vxlan-gpe",
+                        "service-function-forwarder": "SFF2"
                     }
                 ]
             }
@@ -169,7 +190,7 @@ def get_service_function_forwarders_data():
             {
                 "name": "SFF1", ## SFF
                 "service-node": "node1",
-                "ip-mgmt-address": SFF_MGMT_IP,
+                "ip-mgmt-address": SFF1_MGMT_IP,
                 #"rest-uri": "http://"+SFF_IP+":5000",
                 "service-function-forwarder-ovs:ovs-bridge": {
                     "bridge-name": "br-sfc",
@@ -180,7 +201,7 @@ def get_service_function_forwarders_data():
                         "data-plane-locator": {
                             "transport": "service-locator:vxlan-gpe",
                             "port": 6633,
-                            "ip": SFF_DP_IP 
+                            "ip": SFF1_DP_IP 
                         },
                         "service-function-forwarder-ovs:ovs-options": {
                             "remote-ip": "flow",
@@ -206,8 +227,47 @@ def get_service_function_forwarders_data():
                 ],
             },
             {
+                "name": "SFF2", ## SFF
+                "service-node": "node2",
+                "ip-mgmt-address": SFF2_MGMT_IP,
+                #"rest-uri": "http://"+SFF_IP+":5000",
+                "service-function-forwarder-ovs:ovs-bridge": {
+                    "bridge-name": "br-sfc",
+                },
+                "sff-data-plane-locator": [
+                    {
+                        "name": "sff2-dpl",
+                        "data-plane-locator": {
+                            "transport": "service-locator:vxlan-gpe",
+                            "port": 6633,
+                            "ip": SFF2_DP_IP 
+                        },
+                        "service-function-forwarder-ovs:ovs-options": {
+                            "remote-ip": "flow",
+                            "dst-port": "6633",
+                            "key": "flow",
+                            "nsp": "flow",
+                            "nsi": "flow",
+                            "nshc1": "flow",
+                            "nshc2": "flow",
+                            "nshc3": "flow",
+                            "nshc4": "flow"
+                        }
+                    }
+                ],
+                "service-function-dictionary": [
+                    {
+                        "name": "fw-2",
+                        "sff-sf-data-plane-locator": {
+                             "sf-dpl-name": "sf2-dpl",
+                             "sff-dpl-name": "sff2-dpl"
+                        }
+                    }
+                ],
+            },
+            {
                 "name": "SFF3",
-                "service-node": "node2", ##Classifier 2
+                "service-node": "node3", ##Classifier 2
                 "ip-mgmt-address": CLASSIFIER2_MGMT_IP,
                 "service-function-forwarder-ovs:ovs-bridge": {
                     "bridge-name": "br-sfc",
@@ -250,8 +310,12 @@ def get_service_function_chains_data():
                 "symmetric": "true",
                 "sfc-service-function": [
                     {
-                        "name": "dpi-abstract1",
+                        "name": "dpi-1",
                         "type": "dpi"
+                    },
+                    {
+                        "name": "fw-2",
+                        "type": "firewall"
                     }
                 ]
             }
