@@ -286,8 +286,12 @@ def create_sf(sfname):
         flask.abort(400)
 
     logger.info("Received request from ODL to create SF ...")
-    if (use_container == True)
-    logger.info("Using docker container for SF")
+
+    if (use_container == True):
+        logger.info("Using docker container for SF")
+    else:
+        logger.info("Not using docker")
+        
     local_sf_topo = sfc_globals.get_sf_topo()
     r_json = flask.request.get_json()
     with open("jsonputSF.txt", "w") as outfile:
