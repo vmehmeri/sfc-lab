@@ -39,10 +39,10 @@ if __name__ == '__main__':
 
     info( '*** Creating network\n' )
     #net = Mininet( topo=TreeTopo( depth=1, fanout=2 ), controller=RemoteController('c0', ip='127.0.0.1',port=6653) )
-    net = Mininet (controller=RemoteController('c0', ip='127.0.0.1', port=6633) )
+    net = Mininet (controller=RemoteController('c0', ip='192.168.137.200', port=6653) )
     s1 = net.addSwitch('s1')
-    h1 = net.addHost('h1', ip='0.0.0.0', mac='00:00:00:00:00:01') #,  defaultRoute='via 10.0.2.2')
-    h2 = net.addHost('h2', ip='10.13.13.112', mac='00:00:00:00:00:02') #,  defaultRoute='via 10.0.2.2')
+    h1 = net.addHost('h1', ip='10.0.0.1', mac='00:00:00:00:00:01') #,  defaultRoute='via 10.0.2.2')
+    h2 = net.addHost('h2', ip='10.0.0.2', mac='00:00:00:00:00:02') #,  defaultRoute='via 10.0.2.2')
     net.addLink(h1, s1)
     net.addLink(h2, s1)
 
