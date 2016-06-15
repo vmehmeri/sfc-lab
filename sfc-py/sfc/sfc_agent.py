@@ -42,6 +42,7 @@ app = flask.Flask(__name__)
 logger = logging.getLogger(__file__)
 nfq_classifier = classifier.NfqClassifier()
 sfc_globals = _sfc_globals.sfc_globals
+use_container = False
 
 def build_data_plane_service_path(service_path):
     """
@@ -285,6 +286,8 @@ def create_sf(sfname):
         flask.abort(400)
 
     logger.info("Received request from ODL to create SF ...")
+    if (use_container == True)
+    logger.info("Using docker container for SF")
     local_sf_topo = sfc_globals.get_sf_topo()
     r_json = flask.request.get_json()
     with open("jsonputSF.txt", "w") as outfile:
