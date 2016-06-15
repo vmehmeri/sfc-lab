@@ -13,11 +13,11 @@ def start_sf_container(container):
     return response
 
 def stop_sf_container(container):
-    response = docker_client.stop(container=container.get('Id'))
+    response = docker_client.stop(container=container)
     return response
 
 def remove_sf_container(container):
-    response = docker_client.remove_container(container=container.get('Id'))
+    response = docker_client.remove_container(container=container)
     return response
 
 def attach_to_sf_container(container):
