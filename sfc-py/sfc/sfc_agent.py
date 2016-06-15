@@ -16,7 +16,6 @@ import argparse
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(1, parent_dir)
 import sfc  # noqa
-import docker
 
 __package__ = 'sfc'
 
@@ -43,41 +42,6 @@ app = flask.Flask(__name__)
 logger = logging.getLogger(__file__)
 nfq_classifier = classifier.NfqClassifier()
 sfc_globals = _sfc_globals.sfc_globals
-docker_client = Client(base_url='unix://var/run/docker.sock')
-
-def create_sf_container(image='vmehmeri/sf',name='sf'):
-    container = docker_client.create_container(image=image, name=name, detach=False) #command='sudo python /home/root/vxlan_tool.py -i eth0 -d forward -v on')
-    return container
-
-def start_sf_container(container):
-    response = docker_client.start(container=container)
-    return response
-
-def stop_sf_container(container):
-    response = docker_client.stop(container=container.get('Id'))
-    return response
-
-def remove_sf_container(container):
-    response = docker_client.remove_container(container=container.get('Id'))
-    return response
-
-def attach_to_sf_container(container):
-    docker_client.attach(container=container, stdout=True, stderr=True)
-
-def test_start_sf_container():
-    print ("Creating container")
-    ctr = create_sf_container()
-    print (ctr)
-    print ("Starting container")
-    print (start_sf_container(ctr))
-    #attach_to_sf_container(ctr)
-    input('Press any key to continue: ')
-
-    print ("Stopping container")
-    print (stop_sf_container(ctr))
-    print ("Removing container")
-    print (remove_sf_container(ctr))
-
 
 def build_data_plane_service_path(service_path):
     """
@@ -114,8 +78,8 @@ def build_data_plane_service_path(service_path):
                 local_data_plane_path[sh_sff][sp_id] = {}
             local_data_plane_path[sh_sff][sp_id][sh_index] = sf_locator
             sf_name = service_hop['service-function-name']
-            #check_and_start_sf_thread(sf_name)
-            check_and_start_sf_container(sf_name)
+            check_and_start_sf_thread(sf_name)
+
         else:
             logger.error("Failed to build rendered service path: %s",
                          service_path['name'])
@@ -179,11 +143,9 @@ def check_and_start_sf_thread(sf_name):
                     start_sf(sf_name, "0.0.0.0", sf_port, sf_type)
 
 def check_and_start_sf_container(sf_name):
-    if sf_local_host(sf_name):
-        # TODO: Have a file with a sf_name->image_name mapping
-        sf_container = create_sf_container()
-        response = start_sf_container(sf_container)
-        print (response)
+    # TODO: Implement this
+    print ("")
+
 
 def check_nfq_classifier_state():
     """
@@ -337,7 +299,7 @@ def create_sf(sfname):
             sf_ip = data_plane_locator['ip']
             # TODO: We need more checks to make sure IP in locator actually
             # corresponds to one of the existing interfaces in the system
-            start_sf(sfname, sf_ip, sf_port, sf_type)
+            start_sf(sfname, sf_ip, sf_port, sf_type, use_container)
     return flask.jsonify({'sf': local_sf_topo[sfname]}), 201
 
 
@@ -352,7 +314,7 @@ def delete_sf(sfname):
     logger.info("Received request from ODL to delete SF ...")
     try:
         if sfname in local_sf_threads.keys():
-            stop_sf(sfname)
+            stop_sf(sfname, use_container)
 
         local_sf_topo.pop(sfname)
 
@@ -536,6 +498,7 @@ def main():
     #: default values
     agent_port = 5000
     odl_auto_sff = False
+    use_container = False
     ovs_local_sff_cp_ip = '0.0.0.0'
     debug_level = False
 
@@ -543,6 +506,7 @@ def main():
     parser = argparse.ArgumentParser(description='SFC Agent',
                                      usage=("\npython3.5 sfc_agent "
                                             "--rest "
+                                            "--containerized-sf "
                                             "--nfq-class "
                                             "--odl-get-sff "
                                             "--debug-level "
@@ -555,6 +519,9 @@ def main():
                                             "\n\nnote:\n"
                                             "root privileges are required "
                                             "if `--nfq-class` flag is used"))
+
+    parser.add_argument('--containerized-sf', action='store_true',
+                        help='Use docker containers for SFs')
 
     parser.add_argument('--odl-get-sff', action='store_true',
                         help='Get SFF from ODL')
@@ -613,6 +580,9 @@ def main():
     if args.auto_sff_name:
         odl_auto_sff = True
         args.odl_get_sff = True
+
+    if args.containerized_sf:
+        use_container = True
 
     if args.sff_name is not None:
         sfc_globals.set_my_sff_name(args.sff_name)
@@ -676,5 +646,5 @@ def main():
 
 
 if __name__ == "__main__":
-    test_start_sf_container()
-    #main()
+    #test_start_sf_container()
+    main()

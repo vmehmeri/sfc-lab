@@ -14,7 +14,7 @@ from threading import Thread
 
 from .sfc_globals import sfc_globals
 from .services import SF, SFF, CUDP, find_service
-
+from .docker_utils import *
 
 __author__ = "Jim Guichard, Reinaldo Penno"
 __copyright__ = "Copyright(c) 2014, Cisco Systems, Inc."
@@ -214,7 +214,7 @@ def stop_service(service_type, service_name):
     service_threads.pop(service_name, None)
 
 
-def start_sf(sf_name, sf_ip, sf_port, sf_type):
+def start_sf(sf_name, sf_ip, sf_port, sf_type, use_container=False):
     """
     Start a Service Function.
 
@@ -224,23 +224,33 @@ def start_sf(sf_name, sf_ip, sf_port, sf_type):
     """
     logger.info('Starting Service Function: %s', sf_name)
 
-    sf_threads = _get_global_threads(sf_type)
-    if sf_name in sf_threads:
-        stop_service(sf_type, sf_name)
+    if (use_container == True):
+        print ("Creating container for SF %s" %sf_name )
+        ctr = create_sf_container(name=sf_name)
+        print (ctr)
+        print ("Starting container")
+        start_sf_container(ctr)
+    else:
+        sf_threads = _get_global_threads(sf_type)
+        if sf_name in sf_threads:
+            stop_service(sf_type, sf_name)
 
-    sf_thread = Thread(target=start_service,
-                       args=(sf_name, sf_ip, sf_port, sf_type))
+        sf_thread = Thread(target=start_service,
+                           args=(sf_name, sf_ip, sf_port, sf_type))
 
-    sf_thread.start()
-    _check_thread_state(SF, sf_name, sf_thread)
+        sf_thread.start()
+        _check_thread_state(SF, sf_name, sf_thread)
 
 
-def stop_sf(sf_name):
+def stop_sf(sf_name, use_container=False):
     """
     Stop a Service Function.
     """
     logger.info("Stopping Service Function: %s", sf_name)
-    stop_service(SF, sf_name)
+    if (use_container == True):
+        stop_sf_container(sf_name)
+    else:
+        stop_service(SF, sf_name)
 
 
 def start_sff(sff_name, sff_ip, sff_port):
