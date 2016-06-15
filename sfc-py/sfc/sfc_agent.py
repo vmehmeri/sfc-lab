@@ -42,7 +42,6 @@ app = flask.Flask(__name__)
 logger = logging.getLogger(__file__)
 nfq_classifier = classifier.NfqClassifier()
 sfc_globals = _sfc_globals.sfc_globals
-use_container = False
 
 def build_data_plane_service_path(service_path):
     """
@@ -287,11 +286,13 @@ def create_sf(sfname):
 
     logger.info("Received request from ODL to create SF ...")
 
-    if (use_container == True):
+    if (args.containerized_sf == True):
         logger.info("Using docker container for SF")
+        use_container=True
     else:
         logger.info("Not using docker")
-        
+        use_container=False
+
     local_sf_topo = sfc_globals.get_sf_topo()
     r_json = flask.request.get_json()
     with open("jsonputSF.txt", "w") as outfile:
@@ -505,7 +506,6 @@ def main():
     #: default values
     agent_port = 5000
     odl_auto_sff = False
-    use_container = False
     ovs_local_sff_cp_ip = '0.0.0.0'
     debug_level = False
 
@@ -588,8 +588,6 @@ def main():
         odl_auto_sff = True
         args.odl_get_sff = True
 
-    if args.containerized_sf:
-        use_container = True
 
     if args.sff_name is not None:
         sfc_globals.set_my_sff_name(args.sff_name)
