@@ -249,6 +249,7 @@ def stop_sf(sf_name, use_container=False):
     logger.info("Stopping Service Function: %s", sf_name)
     if (use_container == True):
         stop_sf_container(sf_name)
+        remove_sf_container(sf_name)
     else:
         stop_service(SF, sf_name)
 

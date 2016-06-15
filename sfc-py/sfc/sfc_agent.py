@@ -314,17 +314,22 @@ def delete_sf(sfname):
     local_sf_topo = sfc_globals.get_sf_topo()
     local_sf_threads = sfc_globals.get_sf_threads()
     logger.info("Received request from ODL to delete SF ...")
-    try:
-        if sfname in local_sf_threads.keys():
-            stop_sf(sfname, use_container)
+    if (use_container == True):
+        stop_sf(sfname,use_container)
+        return '', 200
+    else:
+        try:
+            if sfname in local_sf_threads.keys():
+                stop_sf(sfname)
 
-        local_sf_topo.pop(sfname)
+            local_sf_topo.pop(sfname)
 
-    except KeyError:
-        logger.warning("SF name %s not found", sfname)
-        status_code = 404
+        except KeyError:
+            logger.warning("SF name %s not found", sfname)
+            status_code = 404
 
-    return '', status_code
+        return '', status_code
+
 
 
 @app.route('/config/service-function-forwarder:service-function-forwarders/'
