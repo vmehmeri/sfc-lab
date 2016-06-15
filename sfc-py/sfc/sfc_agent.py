@@ -176,7 +176,7 @@ def check_and_start_sf_container(sf_name):
         # TODO: Have a file with a sf_name->image_name mapping
         sf_container = create_sf_container()
         response = start_sf_container(sf_container)
-        print response
+        print (response)
 
 def check_nfq_classifier_state():
     """
@@ -669,5 +669,5 @@ def main():
 
 
 if __name__ == "__main__":
-    #main()
-    test_start_sf_container()
+    #test_start_sf_container()
+    main()
