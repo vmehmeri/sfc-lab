@@ -1,0 +1,1 @@
+{"service-function": [{"nsh-aware": true, "ip-mgmt-address": "192.168.137.10", "name": "dpi-1", "sf-data-plane-locator": [{"port": 6633, "transport": "service-locator:vxlan-gpe", "name": "sf1-dpl", "service-function-forwarder": "SFF1", "ip": "172.17.0.2"}], "type": "service-function-type:dpi", "rest-uri": "http://192.168.137.10:5000"}]}
