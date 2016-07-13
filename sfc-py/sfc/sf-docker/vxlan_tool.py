@@ -610,8 +610,11 @@ def main():
         while (args.number > 0):
             """ Send it and make sure all the data is sent out """
             pkt = ethpkt
+            print pkt
             while pkt:
+                print "Sending pkt of size %d" % len(pkt)
                 sent = send_s.send(pkt)
+                print "sent %d" % sent
                 pkt = pkt[sent:]
             pktnum += 1
             if (do_print):
