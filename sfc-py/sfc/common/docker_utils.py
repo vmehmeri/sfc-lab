@@ -17,7 +17,7 @@ def stop_sf_container(container):
     return response
 
 def remove_sf_container(container):
-    response = docker_client.remove_container(container=container)
+    response = docker_client.remove_container(container=container, force=True)
     return response
 
 def attach_to_sf_container(container):
