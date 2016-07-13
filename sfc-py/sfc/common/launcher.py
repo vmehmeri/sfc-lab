@@ -226,7 +226,11 @@ def start_sf(sf_name, sf_ip, sf_port, sf_type, use_container=False):
 
     if (use_container == True):
         print ("Creating container for SF %s" %sf_name )
-        ctr = create_sf_container(name=sf_name)
+        try:
+            ctr = create_sf_container(name=sf_name)
+        except Exception as e:
+            print("SF Creation failed: %s" + e)
+            return
         print (ctr)
         print ("Starting container")
         start_sf_container(ctr)

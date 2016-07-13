@@ -5,8 +5,21 @@ from docker import Client
 docker_client = Client(base_url='unix://var/run/docker.sock')
 
 def create_sf_container(image='vmehmeri/sf',name='sf'):
-    container = docker_client.create_container(image=image, name=name, detach=False) #command='sudo python /home/root/vxlan_tool.py -i eth0 -d forward -v on')
+    try:
+      container = docker_client.create_container(image=image, name=name, detach=False) #command='sudo python /home/root/vxlan_tool.py -i eth0 -d forward -v on')
+    except :
+      for cntr in docker_client.containers():
+        if ("/"+name) in cntr['Names']:
+          print ("Found existing container with same name (Id #%s). Removing it..." % cntr['Id'])
+          stop_sf_container(cntr['Id'])
+          remove_sf_container(cntr['Id'])
+          print ("Recreating...")
+          container = docker_client.create_container(image=image, name=name, detach=False)
+        else:
+          #TODO create specific exception for this
+          raise Exception('Could not create SF container')
     return container
+
 
 def start_sf_container(container):
     response = docker_client.start(container=container)
