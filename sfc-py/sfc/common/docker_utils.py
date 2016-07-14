@@ -1,6 +1,7 @@
 import docker
 
 from docker import Client
+from time import sleep
 
 docker_client = Client(base_url='unix://var/run/docker.sock')
 
@@ -13,6 +14,7 @@ def create_sf_container(image='vmehmeri/sf',name='sf'):
           print ("Found existing container with same name (Id #%s). Removing it..." % cntr['Id'])
           stop_sf_container(cntr['Id'])
           remove_sf_container(cntr['Id'])
+          sleep(3);
           print ("Recreating...")
           container = docker_client.create_container(image=image, name=name, detach=False)
         else:
