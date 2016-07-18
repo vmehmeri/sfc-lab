@@ -53,7 +53,7 @@ while True:
 
     for i in range(0, min(len(n_packets1arr),len(n_packets2arr))):
         if len(out2arr) == len(n_packets1arr) and n_packets1arr[i] != n_packets2arr[i]:
-            if "set_nsp" in out2arr[i]:
+            if "set_nsp" in out2arr[i] or "nsp=" in out2arr[i] and "output" in out2arr[i]:
                 print bcolors.HEADER + "[CLSF FLOW HIT]" + bcolors.ENDC, out2arr[i]
             elif "nsp=" in out2arr[i]:
                 print bcolors.OKBLUE + "[SFF FLOW HIT]" + bcolors.ENDC, out2arr[i]
