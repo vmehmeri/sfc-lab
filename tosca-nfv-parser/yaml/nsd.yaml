@@ -28,6 +28,20 @@ topology_template:
 
                     ## end VNF1
 
+        VNF2:
+                    type: tosca.nodes.nfv.VNF.VNF2
+                    properties:
+                        vendor: fla
+                        id: 1
+                        version: 1
+                    requirements:
+                      - virtualLink:
+                          node: VL1
+                    capabilities:
+                        forwarder
+
+                    ## end VNF1
+
         CP01:       #endpoints of NS
                     type: tosca.nodes.nfv.CP
                     properties:
@@ -57,10 +71,20 @@ topology_template:
                       network_name: existing_network_1
                       vendor: ACME
 
-
         Forwarding path1:
                     type: tosca.nodes.nfv.FP
-                    description: the path (CP01-CP11-CP02)
+                    description: the path CP01-VNF1-VNF2-CP02
+                    properties:
+                       policy:
+                    requirements:
+                        - forwarder: CP01
+                        - forwarder: VNF1
+                        - forwarder: VNF2
+                        - forwarder: CP02
+
+        Forwarding path2:
+                    type: tosca.nodes.nfv.FP
+                    description: the path CP01-VNF1-CP02
                     properties:
                        policy:
                     requirements:

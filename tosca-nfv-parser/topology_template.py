@@ -1,5 +1,6 @@
 from node_template import NodeTemplate
 from node_factory import NodeFactory
+from node_template import NodeType
 from substitution_mappings import SubstitutionMappings
 
 class TopologyTemplate():
@@ -33,6 +34,13 @@ class TopologyTemplate():
             return self.node_templates[node_name]
         else:
             return None
+
+    def get_node_templates_by_type(self, node_type):
+        node_tpls = []
+        for node in self.node_templates.values():
+            if node.get_type() == node_type:
+                node_tpls.append(node)
+        return node_tpls
 
     def print_self(self):
         for node in self.node_templates:

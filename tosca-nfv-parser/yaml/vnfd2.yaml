@@ -2,7 +2,7 @@ tosca_definitions_version:      tosca_simple_profile_for_nfv_1_0_0
 tosca_default_namespace:    # Optional. default namespace (schema, types version)
 description: example for a VNFD.
 metadata:
-    ID: VNFD001                                     # ID of this VNFD
+    ID: VNFD002                                     # ID of this VNFD
     vendor:                              # Provider or vendor
     version:                              # Version of the Descriptor
 #imports:
@@ -10,7 +10,7 @@ metadata:
     # list of import statements for importing other definitions files
 
 node_types:
-    tosca.nodes.nfv.VNF.VNF1:
+    tosca.nodes.nfv.VNF.VNF2:
         derived_from: tosca.nodes.nfv.VNF
         capabilities:
             forwarder_ingress:
@@ -25,7 +25,7 @@ topology_template:
  #   inputs:
 
     substitution_mappings:
-        node_type : tosca.nodes.nfv.VNF.VNF1
+        node_type : tosca.nodes.nfv.VNF.VNF2
         requirements:
             virtualLink: [CP1, virtualLink]
         capabilities:
@@ -35,7 +35,7 @@ topology_template:
         VDU1:
               type: tosca.nodes.nfv.VDU
               properties:
-                image: dpi-docker
+                image: dpi-firewall
                 flavor: m1.tiny
                 config: |
                   param0: key1
@@ -48,7 +48,7 @@ topology_template:
                     count: 3
                     interval: 10
               constraint:
-                domain: cloud
+                domain: cpe
 
         CP_DP:
           type: tosca.nodes.nfv.CP

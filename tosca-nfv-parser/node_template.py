@@ -1,5 +1,5 @@
 import pprint
-
+from enum import Enum
 pp = pprint.PrettyPrinter(indent=2)
 
 class NodeTemplate():
@@ -15,8 +15,7 @@ class NodeTemplate():
     def __init__(self, node_name, node_dict):
         self.node_name = node_name
         self.node_dict = node_dict
-        self.node_type = node_dict['type']
-
+        self.node_type = None
         self.description = node_dict['description'] if 'description' in node_dict.keys() else None
         self.properties = node_dict['properties'] if 'properties' in node_dict.keys() else None
         self.requirements = node_dict['requirements'] if 'requirements' in node_dict.keys() else None
@@ -46,5 +45,12 @@ class NodeTemplate():
         print(prefix, "\t",self.properties)
         print(prefix, "\trequirements:")
         print(prefix, "\t",self.requirements)
+
+class NodeType(Enum):
+    VNF = "tosca.nodes.nfv.VNF"
+    FP = "tosca.nodes.nfv.FP"
+    VL = "tosca.nodes.nfv.VL"
+    CP = "tosca.nodes.nfv.CP"
+    VDU = "tosca.nodes.nfv.VDU"
 
 

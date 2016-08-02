@@ -4,6 +4,7 @@ import xml.etree.cElementTree as ET
 import pprint
 import yaml
 from topology_template import TopologyTemplate
+from node_template import NodeType
 
 from os import listdir
 from os.path import isfile, join
@@ -98,35 +99,64 @@ class NsdParser():
                 node_tpls[node_tpl_name].print_self()
 
     def test(self):
-
+        xml_nodes = [] # list of (FP, nodes) tuples
+        fps = {}
         nsd_tpl = self.topology_templates['NSD001']
-        fp = nsd_tpl.get_node_template_by_name('Forwarding path1').get_path()
-        print("path:",fp)
-        nodes=[]
-        for path_node in fp:
-            if "CP" in path_node:
-                node = {}
-                node['name'] = "NSD001_%s" % path_node
-                node['domain'] = "cloud" if path_node == "CP01" else "cpe"
-                nodes.append(node)
-            elif "VNF" in path_node:
-                node={}
-                vnf_node = nsd_tpl.get_node_template_by_name(path_node)
-                node['name'] = "VNFD001_CP_DP"
-                node['domain'] = vnf_node.get_vdu().get_domain()
-                nodes.append(node)
+        fp_tpls = nsd_tpl.get_node_templates_by_type(NodeType.FP)
 
-        self.write_to_file(nodes)
+        for fp_tpl in fp_tpls:
+            fps[fp_tpl.get_name()] = fp_tpl.get_path()
+
+        for fp_name in fps.keys():
+            print("path:",fp_name)
+            fp = fps[fp_name]
+            nodes=[]
+            for path_node in fp:
+                if "CP" in path_node:
+                    node = {}
+                    node['name'] = "NSD001_%s" % path_node
+                    node['domain'] = "cloud" if path_node == "CP01" else "cpe"
+                    nodes.append(node)
+                elif "VNF" in path_node:
+                    node={}
+                    vnf_node = nsd_tpl.get_node_template_by_name(path_node)
+                    node['name'] = vnf_node.get_name() + "_CP_DP"
+                    node['domain'] = vnf_node.get_vdu().get_domain()
+                    node['image'] = vnf_node.get_vdu().get_image()
+                    nodes.append(node)
+            xml_nodes.append((fp_name,nodes))
+
+        self._write_to_file(xml_nodes)
 
 
-    def write_to_file(self, nodes):
-        root = ET.Element("forwarding-path")
-
-        for node in nodes:
-            node_tag = ET.SubElement(root, "node")
-            ET.SubElement(node_tag, "name").text = node['name']
-            ET.SubElement(node_tag, "domain").text = node['domain']
+    def _write_to_file(self, xml_nodes):
+        root = ET.Element("service-config")
+        for xml_node in xml_nodes:
+            fp_tag = ET.SubElement(root,"forwarding-path")
+            ET.SubElement(fp_tag, "name").text = xml_node[0]
+            nodes = xml_node[1]
+            for node in nodes:
+                node_tag = ET.SubElement(fp_tag, "node")
+                ET.SubElement(node_tag, "name").text = node['name']
+                ET.SubElement(node_tag, "domain").text = node['domain']
+                if 'image' in node.keys():
+                    ET.SubElement(node_tag, "image").text = node['image']
 
         tree = ET.ElementTree(root)
+        self._indent(root)
         tree.write("service_config.xml")
 
+    def _indent(self, elem, level=0):
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i

@@ -5,6 +5,7 @@ class VirtualNetworkFunction(NodeTemplate):
 
     def __init__(self, node_name, node_dict):
         NodeTemplate.__init__(self, node_name, node_dict)
+        self.node_type = node_dict['type']
         self.node_templates = {}
 
     def add_node_template(self, node_name, node_template):
