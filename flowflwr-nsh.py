@@ -42,9 +42,9 @@ def dump_flows(bridge_name, protocol='OpenFlow10'):
 
 
 while True:
-    out1, n_packets1 = dump_flows('s1', 'OpenFlow10')
+    out1, n_packets1 = dump_flows('br-sfc', 'OpenFlow13')
     sleep(POLLING_INTERVAL)
-    out2, n_packets2 = dump_flows('s1', 'OpenFlow10')
+    out2, n_packets2 = dump_flows('br-sfc', 'OpenFlow13')
 
     out2arr = out2.splitlines()
 
@@ -53,9 +53,9 @@ while True:
 
     for i in range(0, min(len(n_packets1arr),len(n_packets2arr))):
         if len(out2arr) == len(n_packets1arr) and n_packets1arr[i] != n_packets2arr[i]:
-            if "set_nsp" in out2arr[i]:
+            if "set_nsp" in out2arr[i] or "nsp=" in out2arr[i] and "output" in out2arr[i]:
                 print bcolors.HEADER + "[CLSF FLOW HIT]" + bcolors.ENDC, out2arr[i]
-            else if "nsp=" in out2arr[i]:
+            elif "nsp=" in out2arr[i]:
                 print bcolors.OKBLUE + "[SFF FLOW HIT]" + bcolors.ENDC, out2arr[i]
             else:
                 print bcolors.OKGREEN + "[FLOW HIT]" + bcolors.ENDC, out2arr[i]
