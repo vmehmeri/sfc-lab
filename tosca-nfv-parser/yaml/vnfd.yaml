@@ -1,0 +1,78 @@
+tosca_definitions_version:      tosca_simple_profile_for_nfv_1_0_0
+tosca_default_namespace:    # Optional. default namespace (schema, types version)
+description: example for a VNFD.
+metadata:
+    ID: VNFD001                                     # ID of this VNFD
+    vendor:                              # Provider or vendor
+    version:                              # Version of the Descriptor
+#imports:
+#    - tosca_base_type_definition.yaml
+    # list of import statements for importing other definitions files
+
+node_types:
+    tosca.nodes.nfv.VNF.VNF1:
+        derived_from: tosca.nodes.nfv.VNF
+        capabilities:
+            forwarder_ingress:
+                type: tosca.capabilities.nfv.Forwarder
+            forwarder_egress:
+                type: tosca.capabilities.nfv.Forwarder
+
+
+
+topology_template:
+
+ #   inputs:
+
+    substitution_mappings:
+        node_type : tosca.nodes.nfv.VNF.VNF1
+        requirements:
+            virtualLink: [CP1, virtualLink]
+        capabilities:
+            forwarder: CP1
+
+    node_templates:
+        VDU1:
+              type: tosca.nodes.nfv.VDU
+              properties:
+                image: OpenWRT
+                flavor: m1.tiny
+                config: |
+                  param0: key1
+                  param1: key2
+                monitoring_policy:
+                  name: ping
+                  actions:
+                    failure: respawn
+                  parameters:
+                    count: 3
+                    interval: 10
+              constraint:
+                domain: cloud
+
+        CP_DP:
+          type: tosca.nodes.nfv.CP
+          properties:
+            management: false
+          requirements:
+     #       - virtualLink:
+     #           node: VL1
+            - virtualBinding:
+                node: VDU1
+
+        CP_MGMT:
+          type: tosca.nodes.nfv.CP
+          properties:
+            management: true
+          requirements:
+            - virtualBinding:
+                node: VDU1
+
+    #    VL1:
+    #      type: tosca.nodes.nfv.VL
+    #      properties:
+    #        network_name: existing_network_1
+    #        vendor: ACME
+
+        ## end VDU1
+

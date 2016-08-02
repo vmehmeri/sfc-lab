@@ -1,0 +1,81 @@
+tosca_definitions_version:      tosca_simple_profile_for_nfv_1_0_0
+tosca_default_namespace:    # Optional. default namespace (schema, types version)
+description: example for a NSD.
+metadata:
+    ID: NSD001                                     # ID of this Network Service Descriptor
+    vendor:                              # Provider or vendor of the Network Service
+    version:                              # Version of the Network Service Descriptor
+imports:
+    - tosca_base_type_definition.yaml
+    # list of import statements for importing other definitions files
+topology_template:
+
+#    inputs:
+#        flavor ID:
+
+    node_templates:
+        VNF1:
+                    type: tosca.nodes.nfv.VNF.VNF1
+                    properties:
+                        vendor: fla
+                        id: 1
+                        version: 1
+                    requirements:
+                      - virtualLink:
+                          node: VL1
+                    capabilities:
+                        forwarder
+
+                    ## end VNF1
+
+        CP01:       #endpoints of NS
+                    type: tosca.nodes.nfv.CP
+                    properties:
+                        management: true
+                    requirements:
+                      - virtualLink:
+                          node: VL1
+
+        CP02:       #endpoints of NS
+                    type: tosca.nodes.nfv.CP
+                    properties:
+                        management: true
+                    requirements:
+                      - virtualLink:
+                          node: VL2
+
+        VL1:
+                    type: tosca.nodes.nfv.VL
+                    properties:
+                      network_name: existing_network_1
+                      vendor: ACME
+
+
+        VL2:
+                    type: tosca.nodes.nfv.VL
+                    properties:
+                      network_name: existing_network_1
+                      vendor: ACME
+
+
+        Forwarding path1:
+                    type: tosca.nodes.nfv.FP
+                    description: the path (CP01-CP11-CP02)
+                    properties:
+                       policy:
+                    requirements:
+                        - forwarder: CP01
+                        - forwarder: VNF1
+                        - forwarder: CP02
+
+
+        #Groups:
+        #    VNFFG1:
+        #      type: tosca.groups.nfv.vnffg
+        #      description: forwarding graph 1
+        #      properties:
+        #        vendor: ACME
+        #        version:
+        #    vl: [VL1,VL2]
+        #    vnf: [VNF1,VNF2,VNF3]
+        #    targets: [Forwarding path1]
