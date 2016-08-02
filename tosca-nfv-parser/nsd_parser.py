@@ -128,5 +128,5 @@ class NsdParser():
             ET.SubElement(node_tag, "domain").text = node['domain']
 
         tree = ET.ElementTree(root)
-        tree.write("filename.xml")
+        tree.write("service_config.xml")
 
