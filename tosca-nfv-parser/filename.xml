@@ -1,1 +1,0 @@
-<forwarding-path><node><name>NSD001_CP01</name><domain>cloud</domain></node><node><name>VNFD001_CP_DP</name><domain>cloud</domain></node><node><name>NSD001_CP02</name><domain>cpe</domain></node></forwarding-path>

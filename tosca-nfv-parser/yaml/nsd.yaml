@@ -76,6 +76,11 @@ topology_template:
                     description: the path CP01-VNF1-VNF2-CP02
                     properties:
                        policy:
+                         type: ACL
+                         criteria:
+                           - net_name: tenant1_net
+                           - dest_port: 80
+                           - ip_proto: tcp
                     requirements:
                         - forwarder: CP01
                         - forwarder: VNF1
@@ -87,6 +92,11 @@ topology_template:
                     description: the path CP01-VNF1-CP02
                     properties:
                        policy:
+                         type: ACL
+                         criteria:
+                           - net_name: tenant1_net
+                           - dest_port: 8080
+                           - ip_proto: tcp
                     requirements:
                         - forwarder: CP01
                         - forwarder: VNF1

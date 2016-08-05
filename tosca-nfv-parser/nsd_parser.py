@@ -2,6 +2,7 @@ import codecs
 import os
 import xml.etree.cElementTree as ET
 import pprint
+import time
 import yaml
 from topology_template import TopologyTemplate
 from node_template import NodeType
@@ -99,8 +100,9 @@ class NsdParser():
             for node_tpl_name in node_tpls.keys():
                 node_tpls[node_tpl_name].print_self()
 
-    def test(self):
-        xml_nodes = [] # list of (FP, nodes) tuples
+    def parseAll(self):
+        fp_acl_dict = {}
+        fp_nodes_tuples = [] # list of (FP, nodes) tuples
         fps = {}
 
         try:
@@ -113,11 +115,13 @@ class NsdParser():
 
         for fp_tpl in fp_tpls:
             fps[fp_tpl.get_name()] = fp_tpl.get_path()
-
+            acl = fp_tpl.get_acl_policy()
+            fp_acl_dict[fp_tpl.get_name()] = acl
         for fp_name in fps.keys():
             print("path:",fp_name)
             fp = fps[fp_name]
-            nodes=[]
+
+            nodes=[] # list of forwarding nodes dictionary
             for path_node in fp:
                 if "CP" in path_node:
                     node = {}
@@ -131,18 +135,28 @@ class NsdParser():
                     node['domain'] = vnf_node.get_vdu().get_domain()
                     node['image'] = vnf_node.get_vdu().get_image()
                     nodes.append(node)
-            xml_nodes.append((fp_name,nodes))
+            fp_nodes_tuples.append((fp_name,nodes))
 
-        self._write_to_file(xml_nodes)
+        self._write_to_file(fp_acl_dict, fp_nodes_tuples)
 
 
-    def _write_to_file(self, xml_nodes):
+    def _write_to_file(self, fp_acl_dict, fp_nodes_tuples):
         root = ET.Element("service-config")
-        for xml_node in xml_nodes:
+        for fp_nodes_tuple in fp_nodes_tuples:
+            fp_name = fp_nodes_tuple[0]
+            acl_dict_list = fp_acl_dict[fp_name]
             fp_tag = ET.SubElement(root,"forwarding-path")
-            ET.SubElement(fp_tag, "name").text = xml_node[0]
-            nodes = xml_node[1]
-            for node in nodes:
+            ET.SubElement(fp_tag, "name").text = fp_name
+            acl_tag = ET.SubElement(fp_tag, "acl")
+
+            for acl_dict in acl_dict_list:
+                for key in acl_dict.keys():
+                    ET.SubElement(acl_tag, key.replace("_","-")).text = str(acl_dict[key])
+
+            #Fill in forwarding nodes
+            forwarding_nodes = fp_nodes_tuple[1]
+            print("forwarding_nodes: ", forwarding_nodes)
+            for node in forwarding_nodes:
                 node_tag = ET.SubElement(fp_tag, "node")
                 ET.SubElement(node_tag, "name").text = node['name']
                 ET.SubElement(node_tag, "domain").text = node['domain']

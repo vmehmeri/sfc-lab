@@ -18,3 +18,10 @@ class ForwardingPath(NodeTemplate):
         """
         return self.path
 
+    def get_acl_policy(self):
+        acl = {}
+        if 'policy' in self.properties.keys():
+            if self.properties['policy']['type'] == "ACL":
+                acl = self.properties['policy']['criteria']
+        print ("ACL: ", acl)
+        return acl

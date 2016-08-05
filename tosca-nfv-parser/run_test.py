@@ -17,8 +17,9 @@ class CatalogueEventHandler(FileSystemEventHandler):
             return
 
         logging.info("Added %s: %s", what, event.src_path)
+
         nsd_parser = NsdParser()
-        nsd_parser.test()
+        nsd_parser.parseAll()
 
 
 if __name__ == "__main__":
