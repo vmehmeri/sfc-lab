@@ -4,6 +4,7 @@ sudo apt-get install libssl-dev openssl libnetfilter-queue-dev python3-flask pyt
 sudo pip3 install sfc paramiko flask click docker-py
 
 ./install_docker.sh
+./create_docker_network.sh
 cd sfc-py/sfc/sf-docker
 ./build.sh
 echo "Setup complete"

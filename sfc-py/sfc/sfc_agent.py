@@ -25,7 +25,6 @@ from sfc.cli import xe_cli, xr_cli, ovs_cli
 from sfc.common import sfc_globals as _sfc_globals
 from sfc.common.launcher import start_sf, stop_sf, start_sff, stop_sff
 
-from docker import Client
 
 __author__ = "Paul Quinn, Reinaldo Penno"
 __copyright__ = "Copyright(c) 2014, Cisco Systems, Inc."
@@ -145,7 +144,7 @@ def check_and_start_sf_thread(sf_name):
 
 def check_and_start_sf_container(sf_name):
     # TODO: Implement this
-    print ("")
+    pass
 
 
 def check_nfq_classifier_state():
@@ -289,8 +288,8 @@ def create_sf(sfname):
 
     local_sf_topo = sfc_globals.get_sf_topo()
     r_json = flask.request.get_json()
-    with open("jsonputSF.txt", "w") as outfile:
-        json.dump(r_json, outfile)
+    #with open("jsonputSF.txt", "w") as outfile:
+    #    json.dump(r_json, outfile)
     local_sf_topo[sfname] = flask.request.get_json()['service-function'][0]
     data_plane_locator_list = local_sf_topo[sfname]['sf-data-plane-locator']
 

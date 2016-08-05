@@ -234,6 +234,7 @@ def start_sf(sf_name, sf_ip, sf_port, sf_type, use_container=False):
         print (ctr)
         print ("Starting container")
         start_sf_container(ctr)
+        add_container_to_vnf_network(ctr,sf_ip)
     else:
         sf_threads = _get_global_threads(sf_type)
         if sf_name in sf_threads:

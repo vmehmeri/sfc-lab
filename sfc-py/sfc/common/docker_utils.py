@@ -1,22 +1,27 @@
 import docker
+import json
 
 from docker import Client
 from time import sleep
 
 docker_client = Client(base_url='unix://var/run/docker.sock')
 
-def create_sf_container(image='vmehmeri/sf',name='sf'):
+def create_sf_container(image='vmehmeri/sf',name='sf',recreate_if_exists=False):
     try:
-      container = docker_client.create_container(image=image, name=name, detach=False) #command='sudo python /home/root/vxlan_tool.py -i eth0 -d forward -v on')
+      container = docker_client.create_container(image=image, name=name, detach=False)
     except :
       for cntr in docker_client.containers():
         if ("/"+name) in cntr['Names']:
-          print ("Found existing container with same name (Id #%s). Removing it..." % cntr['Id'])
-          stop_sf_container(cntr['Id'])
-          remove_sf_container(cntr['Id'])
-          sleep(3);
-          print ("Recreating...")
-          container = docker_client.create_container(image=image, name=name, detach=False)
+          print ("Found existing container with same name (Id #%s). " % cntr['Id'])
+          if (recreate_if_exists):
+            print("Stopping...")
+            stop_sf_container(cntr['Id'])
+            remove_sf_container(cntr['Id'])
+            sleep(3);
+            print ("Recreating...")
+            container = docker_client.create_container(image=image, name=name, detach=False)
+          else:
+            return cntr['Id']
         else:
           #TODO create specific exception for this
           raise Exception('Could not create SF container')
@@ -38,16 +43,43 @@ def remove_sf_container(container):
 def attach_to_sf_container(container):
     docker_client.attach(container=container, stdout=True, stderr=True)
 
-def test_start_sf_container():
+def inspect(container):
+    return docker_client.inspect_container(container)
+
+def get_container_ip_address(container):
+    ctr_dict = inspect(container)
+    return ctr_dict['NetworkSettings']['Networks']['vnf-net']['IPAddress']
+
+def get_vnf_network_id(container):
+    ctr_dict = inspect(container)
+    return ctr_dict['NetworkSettings']['Networks']['vnf-net']['NetworkID']
+
+def add_container_to_vnf_network(container, ip_addr):
+    net_id = None
+    for nw in docker_client.networks():
+        #print(json.dumps(nw,sort_keys=True, indent=4 ))
+
+        if nw['Name'] == "vnf-net":
+            net_id = nw['Id']
+
+    if net_id == None:
+        raise Exception("vnf-net not found")
+
+    docker_client.connect_container_to_network(container=container, net_id=net_id, ipv4_address=ip_addr)
+
+
+def test():
     print ("Creating container")
     ctr = create_sf_container()
-    print (ctr)
     print ("Starting container")
     print (start_sf_container(ctr))
-    #attach_to_sf_container(ctr)
-    input('Press any key to continue: ')
+    #print (get_container_ip_address(ctr))
+    #input('Press any key to continue: ')
 
     print ("Stopping container")
     print (stop_sf_container(ctr))
     print ("Removing container")
     print (remove_sf_container(ctr))
+
+if __name__ == "__main__":
+    test()
