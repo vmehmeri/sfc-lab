@@ -35,7 +35,7 @@ topology_template:
         VDU1:
               type: tosca.nodes.nfv.VDU
               properties:
-                image: dpi-firewall
+                image: firewall-docker
                 flavor: m1.tiny
                 config: |
                   param0: key1

@@ -22,6 +22,7 @@ def _get_templates():
     tpls = []
 
     for filename in _catalogue:
+        print("reading ", filename)
         f = codecs.open("yaml/"+filename, encoding='utf-8', errors='strict')
         tpls.append(f.read())
 
@@ -101,7 +102,13 @@ class NsdParser():
     def test(self):
         xml_nodes = [] # list of (FP, nodes) tuples
         fps = {}
-        nsd_tpl = self.topology_templates['NSD001']
+
+        try:
+            nsd_tpl = self.topology_templates['NSD001']
+        except KeyError as k:
+            print("A main topology template with ID NSD001 was not found.")
+            return
+
         fp_tpls = nsd_tpl.get_node_templates_by_type(NodeType.FP)
 
         for fp_tpl in fp_tpls:
@@ -154,7 +161,7 @@ class NsdParser():
             if not elem.tail or not elem.tail.strip():
                 elem.tail = i
             for elem in elem:
-                self.indent(elem, level+1)
+                self._indent(elem, level+1)
             if not elem.tail or not elem.tail.strip():
                 elem.tail = i
         else:
