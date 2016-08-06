@@ -1,4 +1,5 @@
 # sfc-lab
+This repo contains miscellaneous tools and scripts to experiment with Service Function Chaining
 
 INSTALL OVS-NSH-v8
 sudo apt-get update
@@ -21,5 +22,5 @@ git clone https://git.opendaylight.org/gerrit/p/sfc.git --branch stable/berylliu
 cd sfc/sfc-py
 sudo ./start_agent.sh <CONTROLLER_IP>:8181
 
-MANUAL CREATION OF OVS VxLAN PORT 
+MANUAL CREATION OF OVS VxLAN PORT
 sudo ovs-vsctl add-port s11 sff0-dpl -- set interface sff0-dpl type=vxlan options:remote_ip=flow options:dst_port=6633 options:key=flow options:nsp=flow options:nsi=flow options:nshc1=flow options:nshc2=flow options:nshc3=flow options:nshc4=flow
