@@ -100,7 +100,7 @@ class NsdParser():
             for node_tpl_name in node_tpls.keys():
                 node_tpls[node_tpl_name].print_self()
 
-    def parseAll(self):
+    def parse_all(self):
         fp_acl_dict = {}
         fp_nodes_tuples = [] # list of (FP, nodes) tuples
         fps = {}
@@ -137,7 +137,7 @@ class NsdParser():
                     nodes.append(node)
             fp_nodes_tuples.append((fp_name,nodes))
 
-        self._write_to_file(fp_acl_dict, fp_nodes_tuples)
+        return self._write_to_file(fp_acl_dict, fp_nodes_tuples)
 
 
     def _write_to_file(self, fp_acl_dict, fp_nodes_tuples):
@@ -165,7 +165,8 @@ class NsdParser():
 
         tree = ET.ElementTree(root)
         self._indent(root)
-        tree.write("service_config.xml")
+        tree.write("result/service_config.xml")
+        return tree
 
     def _indent(self, elem, level=0):
         i = "\n" + level*"  "

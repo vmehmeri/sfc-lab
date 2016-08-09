@@ -1,0 +1,5 @@
+curl -i -F file=@nsd.yaml http://localhost:5000/tosca-parser/api/nsd
+curl -i -F file=@vnfd.yaml http://localhost:5000/tosca-parser/api/vnfd
+curl -i -F file=@vnfd2.yaml http://localhost:5000/tosca-parser/api/vnfd
+curl -i -H "Content-Type: application/json" -X POST -d '{"descriptor":"nothing"}' http://localhost:5000/tosca-parser/api/operations/parse
+curl -L -o /home/fla/rest-test/file http://localhost:5000/tosca-parser/api/results/service_config.xml
