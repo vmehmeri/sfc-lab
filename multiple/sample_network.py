@@ -4,6 +4,12 @@ from mininet.cli import CLI
 from mininet.link import Intf
 from mininet.net import Mininet
 from mininet.log import lg, info, error, debug, output
+import sys
+import time
+import os
+import subprocess
+
+NUM_OF_CONTROLLERS=int(sys.argv[1])
 
 def start(controllers=[{'ip':'127.0.0.1', 'port': 6633}]):
 
@@ -14,6 +20,7 @@ def start(controllers=[{'ip':'127.0.0.1', 'port': 6633}]):
     net = Mininet(switch=OVSSwitch, controller=None, autoStaticArp=True, listenPort=6634)
 
     for indx, ctl in enumerate(controllers):
+        print("Adding controller", (1+indx))
         net.addController(('c%d' % indx), controller=RemoteController, ip=ctl['ip'], port=ctl['port'])
 
 
@@ -24,6 +31,7 @@ def start(controllers=[{'ip':'127.0.0.1', 'port': 6633}]):
     #physical_intf = 'eth1'
 
     #Add switch that accepts only OpenFlow 1.0
+
     s1 = net.addSwitch('s1', dpid='00:00:00:00:00:00:00:01', protocols='OpenFlow10')
 
     #Will accept both OpenFlow 1.0 and 1.3
@@ -47,17 +55,47 @@ def start(controllers=[{'ip':'127.0.0.1', 'port': 6633}]):
 
     # Enter CLI mode
     output("Network ready\n")
-    output("Press Ctrl-d or type exit to quit\n")
-    CLI(net)
+    output("Getting results...")
+    time.sleep(60)
+
+    process_results()
+    #output("Press Ctrl-d or type exit to quit\n")
     net.stop()
 
-if __name__ == "__main__":
-    #controllers = []
-    #for i in range(2,22):
-    #    ctrl = {}
-    #    ctrl['ip'] = '172.17.0.%d' % i
-    #    ctrl['port'] = 6633
-    #    controllers.append(ctrl)
+def process_results():
+    subprocess.call("./capture_results.sh", shell=True)
 
-    #start(controllers)
-    start()
+    lines = [line.rstrip('\n') for line in open('results.txt')]
+
+    flow_dict = {}
+
+    for line in lines:
+        arr = line.split('.')
+        ctrl_id = arr[0]
+        #print ("found ctrl_id ", ctrl_id)
+        if ctrl_id in flow_dict.keys():
+            flow_dict[ctrl_id].append(arr[3])
+        else:
+            flow_dict[ctrl_id] = []
+            flow_dict[ctrl_id].append(arr[3])
+
+    acc = 0
+
+    for ctrl_id in flow_dict.keys():
+        number_of_flows = len(flow_dict[ctrl_id])
+        acc += number_of_flows
+        print("Controller #%s : %s flows" % (ctrl_id, number_of_flows))
+
+    print("\nNumber of controllers:", len(flow_dict), "(Expected:", NUM_OF_CONTROLLERS, ")")
+    print("Total number of flows:", acc, "(Expected:", NUM_OF_CONTROLLERS * 100, ")")
+    print("%d flows were missed" % (NUM_OF_CONTROLLERS * 100 - acc))
+
+if __name__ == "__main__":
+    controllers = []
+    for i in range(2, (2 + NUM_OF_CONTROLLERS) ):
+        ctrl = {}
+        ctrl['ip'] = '172.17.0.%d' % i
+        ctrl['port'] = 6633
+        controllers.append(ctrl)
+
+    start(controllers)

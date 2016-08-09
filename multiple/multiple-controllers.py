@@ -3,10 +3,12 @@ import json
 
 from docker import Client
 from time import sleep
+import sys
 
 docker_client = Client(base_url='unix://var/run/docker.sock')
 
-def create_pox_container(image='vmehmeri/pox',name, recreate_if_exists=False):
+def create_pox_container(name, image='vmehmeri/pox',recreate_if_exists=False):
+    container = None
     try:
       container = docker_client.create_container(image=image, name=name, detach=False)
     except :
@@ -67,18 +69,26 @@ def get_container_ip_address(container):
 def stop_and_remove_all(containers):
     for cntr_name in containers.keys():
         cntr_id = containers[cntr_name]['id']
+        print("Stopping container %s" % cntr_name)
         stop_container(cntr_id)
+        print("Removing container %s" % cntr_name)
         remove_container(cntr_id)
-        time.sleep(1)
+        sleep(1)
 
 def test():
     containers = {}
-    for indx in range(0,20):
+    for indx in range(0,int(sys.argv[1])):
         name = "pox_%d" % indx
+        containers[name] = {}
         containers[name]['id'] = create_pox_container(name=name)
-        containers[name]['started'] = True if start_container(containers[name]['id']) == "None" else False
+        containers[name]['started'] = True if start_container(containers[name]['id']) is None else False
+        print("Started container ", name, " - ", get_container_ip_address(containers[name]['id']))
+        sleep(1)
+    return containers
 
+def output_log(container_id):
+    docker_client.logs(container=container_id, stream=True, tail="all", follow=True)
 
 if __name__ == "__main__":
-    test()
-    stop_and_remove_all()
+    ctrs = {}
+    ctrs = test()
