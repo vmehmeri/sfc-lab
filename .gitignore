@@ -1,6 +1,7 @@
 jsonputSF.txt
 tosca-nfv-parser/.idea/
 tosca-nfv-parser/__pycache__/
-tosca-nfv-parser/service_config.xml
+tosca-nfv-parser/result/service_config.xml
+tosca-nfv-parser/yaml/*.*
 .idea
 *.pyc

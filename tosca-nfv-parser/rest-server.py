@@ -85,8 +85,8 @@ def create_nsd():
 
 @app.route('/tosca-parser/api/operations/parse', methods=['POST'])
 def parse():
-    if not request.json:
-        abort(400)
+    #if not request.json:
+    #    abort(400)
 
     nsd_parser = NsdParser()
     tree = nsd_parser.parse_all()

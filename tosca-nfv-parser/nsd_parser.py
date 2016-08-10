@@ -7,7 +7,7 @@ import yaml
 from topology_template import TopologyTemplate
 from node_template import NodeType
 
-from os import listdir
+from os import listdir, remove
 from os.path import isfile, join
 
 _catalogue = [f for f in listdir("yaml/") if isfile(join("yaml/", f))]
@@ -15,7 +15,7 @@ _catalogue = [f for f in listdir("yaml/") if isfile(join("yaml/", f))]
 pp = pprint.PrettyPrinter(indent=2)
 
 
-def _get_templates():
+def _get_templates(remove_after_read=False):
     """
     This will read all files under yaml directory
     :return:
@@ -26,6 +26,8 @@ def _get_templates():
         print("reading ", filename)
         f = codecs.open("yaml/"+filename, encoding='utf-8', errors='strict')
         tpls.append(f.read())
+        if (remove_after_read):
+            remove("yaml/"+filename)
 
     return tpls
 
@@ -56,7 +58,7 @@ def dict_compare(d1, d2):
 
 class NsdParser():
     def __init__(self):
-        self.tosca_templates = _get_templates()
+        self.tosca_templates = _get_templates(remove_after_read=True)
         self.topology_dictionaries = {} #map [ID, Dictionary]
         self.topology_templates = {} #map [ID, TopologyTemplate]
         self.substitution_map = {}
