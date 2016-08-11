@@ -1,6 +1,6 @@
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request, make_response, send_from_directory #url_for
-from nsd_parser import NsdParser
+from nsd_parser import NsdParser, clean_up
 import codecs
 import os
 
@@ -96,7 +96,10 @@ def parse():
 @app.route('/tosca-parser/api/results/<path:filename>', methods=['GET', 'POST'])
 def download(filename):
     uploads = os.path.join(app.config['DOWNLOAD_FOLDER'])
-    return send_from_directory(directory=uploads, filename=filename)
+    try:
+        return send_from_directory(directory=uploads, filename=filename)
+    finally:
+        clean_up()
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -11,11 +11,12 @@ from os import listdir, remove
 from os.path import isfile, join
 
 _catalogue = [f for f in listdir("yaml/") if isfile(join("yaml/", f))]
+_parsed = [f for f in listdir("result/") if isfile(join("result/", f))]
 
 pp = pprint.PrettyPrinter(indent=2)
 
 
-def _get_templates(remove_after_read=False):
+def _get_templates():
     """
     This will read all files under yaml directory
     :return:
@@ -26,11 +27,18 @@ def _get_templates(remove_after_read=False):
         print("reading ", filename)
         f = codecs.open("yaml/"+filename, encoding='utf-8', errors='strict')
         tpls.append(f.read())
-        if (remove_after_read):
-            remove("yaml/"+filename)
 
     return tpls
 
+def clean_up():
+    for filename in _catalogue:
+        filepath = "yaml/"+filename
+        print("removing ", filepath)
+        remove(filepath)
+    for result_filename in _parsed:
+        result_filepath = "result/"+result_filename
+        print("removing ", result_filepath)
+        remove(result_filepath)
 
 def log(obj):
     """
@@ -58,7 +66,7 @@ def dict_compare(d1, d2):
 
 class NsdParser():
     def __init__(self):
-        self.tosca_templates = _get_templates(remove_after_read=True)
+        self.tosca_templates = _get_templates()
         self.topology_dictionaries = {} #map [ID, Dictionary]
         self.topology_templates = {} #map [ID, TopologyTemplate]
         self.substitution_map = {}
@@ -138,8 +146,13 @@ class NsdParser():
                     node['image'] = vnf_node.get_vdu().get_image()
                     nodes.append(node)
             fp_nodes_tuples.append((fp_name,nodes))
+        try:
+            return self._write_to_file(fp_acl_dict, fp_nodes_tuples)
+        except Exception as e:
+            clean_up()
+            print("An error occured",e)
+            return None
 
-        return self._write_to_file(fp_acl_dict, fp_nodes_tuples)
 
 
     def _write_to_file(self, fp_acl_dict, fp_nodes_tuples):

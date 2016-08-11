@@ -79,7 +79,7 @@ topology_template:
                          type: ACL
                          criteria:
                            - net_name: tenant1_net
-                           - dest_port: 80
+                           - dest_port: 8080
                            - ip_proto: tcp
                     requirements:
                         - forwarder: CP01
@@ -95,7 +95,7 @@ topology_template:
                          type: ACL
                          criteria:
                            - net_name: tenant1_net
-                           - dest_port: 8080
+                           - dest_port: 80
                            - ip_proto: tcp
                     requirements:
                         - forwarder: CP01
