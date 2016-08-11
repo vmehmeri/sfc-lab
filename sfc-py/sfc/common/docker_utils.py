@@ -29,17 +29,26 @@ def create_sf_container(image='vmehmeri/sf',name='sf',recreate_if_exists=False):
 
 
 def start_sf_container(container):
-    response = docker_client.start(container=container)
-    return response
+    docker_client.start(container=container)
 
 def stop_sf_container(container):
-    response = docker_client.stop(container=container)
-    return response
+    found = False
+    for ctr in docker_client.containers():
+        if container['Id'] == ctr['Id']:
+            found = True
+            break
+
+    if (found == True):
+        docker_client.stop(container=container)
+    else:
+        print("Container doesn't exist. Ignoring...")
 
 def remove_sf_container(container):
-    response = docker_client.remove_container(container=container, force=True)
-    return response
-
+    try:
+        docker_client.remove_container(container=container, force=True)
+    except:
+        pass
+    
 def attach_to_sf_container(container):
     docker_client.attach(container=container, stdout=True, stderr=True)
 
@@ -74,7 +83,7 @@ def test():
     print ("Starting container")
     print (start_sf_container(ctr))
     #print (get_container_ip_address(ctr))
-    #input('Press any key to continue: ')
+    input('Press any key to continue: ')
 
     print ("Stopping container")
     print (stop_sf_container(ctr))
