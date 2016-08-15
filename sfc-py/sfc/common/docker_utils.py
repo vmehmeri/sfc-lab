@@ -24,7 +24,7 @@ def create_sf_container(image='vmehmeri/sf',name='sf',recreate_if_exists=False):
             return cntr['Id']
         else:
           #TODO create specific exception for this
-          raise Exception('Could not create SF container')
+          raise Exception('Failed to create SF container')
     return container
 
 
@@ -33,22 +33,33 @@ def start_sf_container(container):
 
 def stop_sf_container(container):
     found = False
-    for ctr in docker_client.containers():
-        if container['Id'] == ctr['Id']:
+    ctr = None
+
+    if type(container) is str:
+        ctr = container
+    elif 'Id' in container.keys():
+        ctr = container['Id']
+
+    #Check if container is actually running
+
+    print("Stopping container %s" % ctr)
+    for container in docker_client.containers():
+        print(container['Names'])
+        if '/'+ctr in container['Names'] or ctr == container['Id']:
             found = True
             break
 
     if (found == True):
         docker_client.stop(container=container)
     else:
-        print("Container doesn't exist. Ignoring...")
+        print("Container is not running.")
 
 def remove_sf_container(container):
     try:
         docker_client.remove_container(container=container, force=True)
     except:
         pass
-    
+
 def attach_to_sf_container(container):
     docker_client.attach(container=container, stdout=True, stderr=True)
 
