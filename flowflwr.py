@@ -42,9 +42,9 @@ def dump_flows(bridge_name, protocol='OpenFlow10'):
 
 
 while True:
-    out1, n_packets1 = dump_flows('s1', 'OpenFlow10')
+    out1, n_packets1 = dump_flows('br-sfc', 'OpenFlow13')
     sleep(POLLING_INTERVAL)
-    out2, n_packets2 = dump_flows('s1', 'OpenFlow10')
+    out2, n_packets2 = dump_flows('br-sfc', 'OpenFlow13')
 
     out2arr = out2.splitlines()
 
