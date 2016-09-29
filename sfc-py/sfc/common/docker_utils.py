@@ -7,6 +7,7 @@ from time import sleep
 docker_client = Client(base_url='unix://var/run/docker.sock')
 
 def create_sf_container(image='vmehmeri/sf',name='sf',recreate_if_exists=False):
+    container = None
     try:
       container = docker_client.create_container(image=image, name=name, detach=False)
     except :
@@ -92,8 +93,8 @@ def test():
     print ("Creating container")
     ctr = create_sf_container()
     print ("Starting container")
-    print (start_sf_container(ctr))
-    #print (get_container_ip_address(ctr))
+    start_sf_container(ctr)
+    print (get_container_ip_address(ctr))
     input('Press any key to continue: ')
 
     print ("Stopping container")
