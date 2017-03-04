@@ -1,28 +1,25 @@
 import os
 
 DC1_IP='10.0.0.1'
-DC2_IP='11.0.0.1'
-DC3_IP='10.0.0.2'
-DC3_2_IP='11.0.0.2'
-#DC1_IP2='11.0.0.1'
-#DC2_IP2='11.0.0.2'
+DC2_IP='10.0.0.2'
+DC1_IP2='11.0.0.1'
+DC2_IP2='11.0.0.2'
 
 
 
 DC1_MAC='08:00:11:11:11:11'
 DC2_MAC='08:00:22:22:22:22'
-DC3_MAC='08:00:33:33:33:33'
-DC3_2_MAC='08:00:44:44:44:44'
 
 
 
 def setStaticArp():
 
-    os.system( "ssh vime@dc1 sudo arp -s  %s %s -i eth2" %(DC3_IP, DC3_MAC) )
-    os.system( "ssh vime@dc2 sudo arp -s %s %s -i eth2" %(DC3_2_IP,DC3_2_MAC) )
-    os.system( "ssh vime@dc3 sudo arp -s %s %s -i eth2" %(DC1_IP,DC1_MAC) )
-    os.system( "ssh vime@dc3 sudo arp -s %s %s -i eth3" %(DC2_IP,DC2_MAC) )
+    os.system( "ssh vime@dc2 sudo arp -s %s %s -i eth2" %(DC2_IP,DC2_MAC) )
+    os.system( "ssh vime@dc2 sudo arp -s %s %s -i eth2" %(DC2_IP2,DC2_MAC) )
 
+
+    os.system( "ssh vime@dc1 sudo arp -s  %s %s -i eth2" %(DC1_IP, DC1_MAC) )
+    os.system( "ssh vime@dc1 sudo arp -s  %s %s -i eth2" %(DC1_IP2, DC1_MAC) )
 
     #os.system( "ssh fla@tnt1vno1-client sudo arp -s %s %s -i eth1" %(TNT1VNO1_SERVER_IP, TNT1VNO1_SERVER_MAC) )
     #os.system( "ssh fla@tnt1vno1-server sudo arp -s %s %s -i eth1" %(TNT1VNO1_CLIENT_IP, TNT1VNO1_CLIENT_MAC) )

@@ -40,40 +40,6 @@
               }
           ]
         },
-        { "id" : 3,
-          "name" : s3,
-          "type" : packet,
-          "ports" : [
-              { "number" : 1,
-                "mac" : "00:00:00:00:03:01",
-                "type" : "packet",
-                "ingress" : true,
-                "egress" : true
-              },
-              { "number" : 2,
-                "mac" : "00:00:00:00:02:02",
-                "type" : "packet"
-              },
-              { "number" : 3,
-                "mac" : "00:00:00:00:02:03",
-                "type" : "packet"
-              },
-              { "number" : 4,
-                "mac" : "00:00:00:00:02:04",
-                "type" : "packet"
-              },
-              { "number" : 5,
-                "mac" : "00:00:00:00:02:05",
-                "type" : "packet"
-              },
-              { "number" : 6,
-                "mac" : "00:00:00:00:02:06",
-                "type" : "packet",
-                "ingress" : true,
-                "egress" : true
-              }
-          ]
-        }
         { "id" : 11,
           "name" : r1,
           "type" : optical,
@@ -93,6 +59,14 @@
               { "number" : 4,
                 "mac" : "00:00:00:00:11:04",
                 "type" : "optical"
+              },
+              { "number" : 5,
+                "mac" : "00:00:00:00:11:05",
+                "type" : "optical"
+              },
+              { "number" : 6,
+                "mac" : "00:00:00:00:11:06",
+                "type" : "optical"
               }
           ]
         },
@@ -102,10 +76,26 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:00:12:01",
-                "type" : "optical"
+                "type" : "packet"
               },
               { "number" : 2,
                 "mac" : "00:00:00:00:12:02",
+                "type" : "packet"
+              },
+              { "number" : 3,
+                "mac" : "00:00:00:00:12:03",
+                "type" : "optical"
+              },
+              { "number" : 4,
+                "mac" : "00:00:00:00:12:04",
+                "type" : "optical"
+              },
+              { "number" : 5,
+                "mac" : "00:00:00:00:12:05",
+                "type" : "optical"
+              },
+              { "number" : 6,
+                "mac" : "00:00:00:00:12:06",
                 "type" : "optical"
               }
           ]
@@ -121,18 +111,6 @@
               { "number" : 2,
                 "mac" : "00:00:00:00:13:02",
                 "type" : "packet"
-              },
-              { "number" : 3,
-                "mac" : "00:00:00:00:13:03",
-                "type" : "optical"
-              },
-              { "number" : 4,
-                "mac" : "00:00:00:00:13:04",
-                "type" : "optical"
-              },
-              { "number" : 5,
-                "mac" : "00:00:00:00:13:05",
-                "type" : "optical"
               }
           ]
         },
@@ -142,15 +120,11 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:00:14:01",
-                "type" : "optical"
+                "type" : "packet"
               },
               { "number" : 2,
                 "mac" : "00:00:00:00:14:02",
-                "type" : "optical"
-              },
-              { "number" : 3,
-                "mac" : "00:00:00:00:14:03",
-                "type" : "optical"
+                "type" : "packet"
               }
           ]
         },
@@ -160,26 +134,10 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:00:15:01",
-                "type" : "optical"
+                "type" : "packet"
               },
               { "number" : 2,
                 "mac" : "00:00:00:00:15:02",
-                "type" : "optical"
-              },
-              { "number" : 3,
-                "mac" : "00:00:00:00:15:03",
-                "type" : "packet"
-              },
-              { "number" : 4,
-                "mac" : "00:00:00:00:15:04",
-                "type" : "packet"
-              },
-              { "number" : 5,
-                "mac" : "00:00:00:00:15:05",
-                "type" : "packet"
-              },
-              { "number" : 6,
-                "mac" : "00:00:00:00:15:06",
                 "type" : "packet"
               }
           ]
@@ -190,15 +148,11 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:00:16:01",
-                "type" : "optical"
+                "type" : "packet"
               },
               { "number" : 2,
                 "mac" : "00:00:00:00:16:02",
-                "type" : "optical"
-              },
-              { "number" : 3,
-                "mac" : "00:00:00:00:16:03",
-                "type" : "optical"
+                "type" : "packet"
               }
           ]
         },
@@ -208,15 +162,25 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:00:17:01",
-                "type" : "optical"
+                "type" : "packet"
               },
               { "number" : 2,
                 "mac" : "00:00:00:00:17:02",
-                "type" : "optical"
+                "type" : "packet"
+              }
+          ]
+        },
+        { "id" : 18,
+          "name" : r8,
+          "type" : optical,
+          "ports" : [
+              { "number" : 1,
+                "mac" : "00:00:00:00:18:01",
+                "type" : "packet"
               },
-              { "number" : 3,
-                "mac" : "00:00:00:00:17:03",
-                "type" : "optical"
+              { "number" : 2,
+                "mac" : "00:00:00:00:18:02",
+                "type" : "packet"
               }
           ]
         }
@@ -236,24 +200,6 @@
           "ports" : [
               { "number" : 1,
                 "mac" : "00:00:00:02:00:01",
-                "type" : "packet"
-              }
-          ]
-        },
-        { "id" : 23,
-          "name" : "h3",
-          "ports" : [
-              { "number" : 1,
-                "mac" : "00:00:00:03:00:01",
-                "type" : "packet"
-              }
-          ]
-        },
-        { "id" : 24,
-          "name" : "h4",
-          "ports" : [
-              { "number" : 1,
-                "mac" : "00:00:00:04:00:01",
                 "type" : "packet"
               }
           ]
@@ -280,110 +226,80 @@
         },
         { "id" : 4,
           "src" : 11,
-          "dst" : 12,
+          "dst" : 13,
           "srcPort" : 3,
           "dstPort" : 1
         },
         { "id" : 5,
           "src" : 11,
-          "dst" : 17,
+          "dst" : 15,
           "srcPort" : 4,
           "dstPort" : 1
         },
         { "id" : 6,
-          "src" : 12,
-          "dst" : 13,
-          "srcPort" : 2,
-          "dstPort" : 3
+          "src" : 11,
+          "dst" : 16,
+          "srcPort" : 5,
+          "dstPort" : 1
         },
         { "id" : 7,
-          "src" : 22,
-          "dst" : 2,
-          "srcPort" : 1,
+          "src" : 11,
+          "dst" : 17,
+          "srcPort" : 6,
           "dstPort" : 1
         },
         { "id" : 8,
-          "src" : 2,
-          "dst" : 13,
+          "src" : 13,
+          "dst" : 14,
           "srcPort" : 2,
           "dstPort" : 1
         },
         { "id" : 9,
-          "src" : 2,
-          "dst" : 13,
-          "srcPort" : 3,
-          "dstPort" : 2
-        },
-        { "id" : 10,
-          "src" : 13,
-          "dst" : 14,
-          "srcPort" : 4,
-          "dstPort" : 1
-        },
-        { "id" : 11,
-          "src" : 13,
-          "dst" : 16,
-          "srcPort" : 5,
-          "dstPort" : 2
-        },
-        { "id" : 12,
-          "src" : 14,
-          "dst" : 17,
-          "srcPort" : 3,
-          "dstPort" : 2
-        },
-        { "id" : 13,
           "src" : 17,
-          "dst" : 16,
-          "srcPort" : 3,
-          "dstPort" : 1
-        },
-        { "id" : 14,
-          "src" : 16,
-          "dst" : 15,
-          "srcPort" : 3,
-          "dstPort" : 2
-        },
-        { "id" : 15,
-          "src" : 14,
-          "dst" : 15,
+          "dst" : 18,
           "srcPort" : 2,
           "dstPort" : 1
         },
-        { "id" : 16,
-          "src" : 15,
-          "dst" : 3,
-          "srcPort" : 3,
-          "dstPort" : 2
-        },
-        { "id" : 17,
-          "src" : 15,
-          "dst" : 3,
-          "srcPort" : 4,
+        { "id" : 10,
+          "src" : 14,
+          "dst" : 12,
+          "srcPort" : 2,
           "dstPort" : 3
         },
-        { "id" : 18,
+        { "id" : 11,
           "src" : 15,
-          "dst" : 3,
-          "srcPort" : 5,
+          "dst" : 12,
+          "srcPort" : 2,
           "dstPort" : 4
         },
-        { "id" : 19,
-          "src" : 15,
-          "dst" : 3,
-          "srcPort" : 6,
+        { "id" : 12,
+          "src" : 16,
+          "dst" : 12,
+          "srcPort" : 2,
           "dstPort" : 5
         },
-        { "id" : 20,
-          "src" : 3,
-          "dst" : 23,
-          "srcPort" : 1,
-          "dstPort" : 1
+        { "id" : 13,
+          "src" : 18,
+          "dst" : 12,
+          "srcPort" : 2,
+          "dstPort" : 6
         },
-        { "id" : 21,
-          "src" : 3,
-          "dst" : 24,
-          "srcPort" : 6,
+        { "id" : 14,
+          "src" : 12,
+          "dst" : 2,
+          "srcPort" : 1,
+          "dstPort" : 2
+        },
+        { "id" : 15,
+          "src" : 12,
+          "dst" : 2,
+          "srcPort" : 2,
+          "dstPort" : 3
+        },
+        { "id" : 16,
+          "src" : 2,
+          "dst" : 22,
+          "srcPort" : 1,
           "dstPort" : 1
         }
     ]

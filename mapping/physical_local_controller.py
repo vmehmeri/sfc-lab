@@ -10,7 +10,7 @@ from mininet.link import Intf, TCLink
 from mininet.net import Mininet
 from mininet.log import lg, info, error, debug, output
 
-def start(ip="127.0.0.1",port=6633):
+def start(ip="192.168.137.111",port=6633):
 
     dc1_intfName = 'eth1'
     dc2_intfName = 'eth2'
@@ -25,11 +25,11 @@ def start(ip="127.0.0.1",port=6633):
 
     print ("Adding controller")
     ctrlr = lambda n: RemoteController(n, ip=ip, port=port, inNamespace=False)
-    #ctrlr2 = RemoteController('2', ip='192.168.137.111', port=port, inNamespace=False)
+    ctrlr2 = RemoteController('2', ip='192.168.137.150', port=port, inNamespace=False)
     net = LINCNet(switch=OVSSwitch, link=LINCLink, controller=ctrlr, autoStaticArp=True, listenPort=6634)
     c1 = net.addController('c1')
     #c2 = net.addController('c2',controller=RemoteController, ip='192.168.137.62',port=6633)
-    #c2 = net.addController(ctrlr2)
+    c2 = net.addController(ctrlr2)
 
     # Add hosts
     #h1 = net.addHost('h1')

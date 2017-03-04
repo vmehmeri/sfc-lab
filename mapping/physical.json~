@@ -379,12 +379,6 @@
           "dst" : 23,
           "srcPort" : 1,
           "dstPort" : 1
-        },
-        { "id" : 21,
-          "src" : 3,
-          "dst" : 24,
-          "srcPort" : 6,
-          "dstPort" : 1
         }
     ]
 }

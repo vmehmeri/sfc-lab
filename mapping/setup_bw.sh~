@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./limit_bw.sh tap19
+./limit_bw.sh tap23
+./limit_bw.sh tap21
+./limit_bw.sh tap25

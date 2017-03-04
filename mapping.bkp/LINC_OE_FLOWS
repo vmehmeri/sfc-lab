@@ -1,0 +1,4 @@
+cd ~/Public/LINC-Switch
+sudo ./rel/linc/bin/linc attach
+
+linc_us4_oe_flow:get_flow_table(1,0).
